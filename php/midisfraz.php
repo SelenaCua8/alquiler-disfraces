@@ -235,7 +235,7 @@ $resultDisfraces = mysqli_query($conexion, $sqlDisfraces);
                                 <td><?php echo $fila['tipo']; ?></td>
                                 <td><?php echo $fila['imagen']; ?></td>
                             </tr>
-                        <?php } ?>
+                        <?php } ?> 
 
                     </table>
                 </div>

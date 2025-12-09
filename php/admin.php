@@ -30,30 +30,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($accion === 'ingresar') {
-        $nombre_disfraz = $_POST['nombre_disfraz'];
-        $tipo           = $_POST['tipo'];
-        $imagen         = $_POST['imagen'];
+    
+        $nombre_disfraz = mysqli_real_escape_string($conexion, $_POST['nombre_disfraz']);
+        $tipo           = mysqli_real_escape_string($conexion, $_POST['tipo']);
+        $imagen         = mysqli_real_escape_string($conexion, $_POST['imagen']);
 
         $sqlInsert = "INSERT INTO disfraces (nombre_disfraz, tipo, imagen)
                       VALUES ('$nombre_disfraz', '$tipo', '$imagen')";
         mysqli_query($conexion, $sqlInsert);
+        
+        $_SESSION['saludo'] = "Disfraz '$nombre_disfraz' ingresado correctamente.";
+        // Redirigir para evitar reenvío del formulario
+        header("Location: admin.php");
+        exit();
 
-    } elseif ($accion === 'modificar') {
-        $id_disfraces   = (int) $_POST['id_disfraces'];
-        $nombre_disfraz = $_POST['nombre_disfraz'];
-        $tipo           = $_POST['tipo'];
-
+    } 
+   
+    elseif ($accion === 'eliminar') {
        
-        $sqlUpdate = "UPDATE disfraces
-                      SET nombre_disfraz='$nombre_disfraz',
-                          tipo='$tipo'
-                      WHERE id_disfraces=$id_disfraces";
-        mysqli_query($conexion, $sqlUpdate);
-
-    } elseif ($accion === 'eliminar') {
         $id_disfraces = (int) $_POST['id_disfraces'];
         $sqlDelete = "DELETE FROM disfraces WHERE id_disfraces=$id_disfraces";
         mysqli_query($conexion, $sqlDelete);
+        
+        $_SESSION['saludo'] = "Disfraz (ID $id_disfraces) eliminado correctamente.";
+        
+        header("Location: admin.php");
+        exit();
     }
 }
 
@@ -64,9 +66,12 @@ if (isset($_GET['busqueda'])) {
     $busqueda = "";
 }
 
-$sqlDisfraces = "SELECT * FROM disfraces";
+
+$busqueda_segura = mysqli_real_escape_string($conexion, $busqueda);
+
+$sqlDisfraces = "SELECT id_disfraces, nombre_disfraz, tipo FROM disfraces";
 if ($busqueda !== '') {
-    $sqlDisfraces .= " WHERE nombre_disfraz LIKE '%$busqueda%' OR tipo LIKE '%$busqueda%'";
+    $sqlDisfraces .= " WHERE nombre_disfraz LIKE '%$busqueda_segura%' OR tipo LIKE '%$busqueda_segura%'";
 }
 $resultDisfraces = mysqli_query($conexion, $sqlDisfraces);
 ?>
@@ -77,6 +82,7 @@ $resultDisfraces = mysqli_query($conexion, $sqlDisfraces);
     <title>Panel administrador</title>
 
     <style>
+        
         body {
             margin: 0;
             padding: 0;
@@ -225,15 +231,8 @@ $resultDisfraces = mysqli_query($conexion, $sqlDisfraces);
         table tr:nth-child(even) {
             background: #383838;
         }
-
-        table input[type="text"] {
-            width: 100%;
-            padding: 5px;
-            border-radius: 4px;
-            border: none;
-            background: #444;
-            color: #f5f5f5;
-        }
+        
+     
 
         .celda-acciones {
             display: flex;
@@ -305,20 +304,19 @@ $resultDisfraces = mysqli_query($conexion, $sqlDisfraces);
                         </tr>
                         <?php while ($fila = mysqli_fetch_assoc($resultDisfraces)) { ?>
                             <tr>
-                                <form method="post">
-                                    <td><?php echo $fila['id_disfraces']; ?></td>
-                                    <td>
-                                        <input type="text" name="nombre_disfraz" value="<?php echo $fila['nombre_disfraz']; ?>">
-                                    </td>
-                                    <td>
-                                        <input type="text" name="tipo" value="<?php echo $fila['tipo']; ?>">
-                                    </td>
-                                    <td class="celda-acciones">
+                                <td><?php echo $fila['id_disfraces']; ?></td>
+                                <td><?php echo $fila['nombre_disfraz']; ?></td>
+                                <td><?php echo $fila['tipo']; ?></td>
+                                
+                                <td class="celda-acciones">
+                                    <a class="btn btn-chico btn-primario" 
+                                       href="editar_disfraz.php?id=<?php echo $fila['id_disfraces']; ?>">Editar</a>
+
+                                    <form method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar este disfraz: <?php echo $fila['nombre_disfraz']; ?>?');">
                                         <input type="hidden" name="id_disfraces" value="<?php echo $fila['id_disfraces']; ?>">
-                                        <button class="btn btn-chico btn-primario" type="submit" name="accion" value="modificar">Modificar</button>
-                                        <button class="btn btn-chico btn-peligro" type="submit" name="accion" value="eliminar" onclick="return confirm('¿Eliminar este disfraz?');">Eliminar</button>
-                                    </td>
-                                </form>
+                                        <button class="btn btn-chico btn-peligro" type="submit" name="accion" value="eliminar">Eliminar</button>
+                                    </form>
+                                </td>
                             </tr>
                         <?php } ?>
                     </table>

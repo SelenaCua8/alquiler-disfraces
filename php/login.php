@@ -1,36 +1,30 @@
 <?php
-// #1: INICIO DEL BLOQUE PHP DE LÓGICA Y SESIÓN
+// inicio sesión
 session_start();
 
-// chequeo la autenticación
+// chequeo l
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // datos del formulario
-   // datos del formulario
-$nombreForm = $_POST['nombre'];
-$emailForm = $_POST['email'];
-$passwordForm = $_POST['password'];
+    $emailForm = $_POST['email'];
+    $passwordForm = $_POST['password'];
 
-    // Conexión a la base de datos
+    // Conexion a la base de datos
     $conexion = mysqli_connect("localhost", "root", "", "alquiler_disfraces");
 
     if (!$conexion) {
         die("Error en la conexión a la base de datos.");
     }
 
-    // Consulta en la base de datos (se mantiene tu consulta original)
-    $consulta = "SELECT * FROM usuarios 
-                 WHERE email='$emailForm' 
-                 AND `contraseña`='$passwordForm'";
-
+    //consulta SOLO por email.
+    $consulta = "SELECT * FROM usuarios WHERE email='$emailForm'";
     $resultado = mysqli_query($conexion, $consulta);
-
-    // Valida los usuarios
-    if ($resultado && mysqli_num_rows($resultado) == 1) {
-
-        $usuario = mysqli_fetch_assoc($resultado);
-
-        // Guardo datos 
+    $usuario = mysqli_fetch_assoc($resultado); 
+    
+    // Se valida usando password_verify()
+    if ($usuario && password_verify($passwordForm, $usuario['contrasena'])) {
+    
+        // Guardo datossolo se ejecuta si la contraseña hasheada es válida
         $_SESSION['id_usuario'] = $usuario['id_usuario'];
         $_SESSION['nombre']= $usuario['nombre'];
         $_SESSION['email'] = $usuario['email'];
@@ -52,10 +46,12 @@ $passwordForm = $_POST['password'];
         
         $_SESSION['error_login'] = "Email o contraseña incorrectos.";
         
-        header("Location: " . htmlspecialchars($_SERVER["PHP_SELF"])); 
+     
         exit();
     }
 }
+
+       
 ?>
 <!DOCTYPE html>
 <html lang="es">
