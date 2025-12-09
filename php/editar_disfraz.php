@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// 1. Página protegida solo para administrador
+// aca solo admin 
 if (!isset($_SESSION['id_usuario']) || $_SESSION['tipo'] !== 'administrador') {
     header("Location: ../html/index.html");
     exit();
@@ -9,16 +9,16 @@ if (!isset($_SESSION['id_usuario']) || $_SESSION['tipo'] !== 'administrador') {
 
 $nombreUsuario = $_SESSION['nombre'];
 
-// 2. Conectando a la base de datos
+// conexion base de datos
 $conexion = mysqli_connect("localhost", "root", "", "alquiler_disfraces");
 if (!$conexion) {
     die("Error de conexión: " . mysqli_connect_error());
 }
 
-// 3. Manejo de la modificación (POST)
+// Manejo de la modificación
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // Verificamos el ID
+    // Vveificacion de id
     if (!isset($_POST['id_disfraces']) || (int)$_POST['id_disfraces'] === 0) {
         $_SESSION['saludo'] = "Error: ID de disfraz no especificado para modificar.";
         header("Location: admin.php");
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Saneamiento de datos antes de usarlos en la consulta
     $nombre_disfraz = mysqli_real_escape_string($conexion, $_POST['nombre_disfraz']);
     $tipo           = mysqli_real_escape_string($conexion, $_POST['tipo']);
-    $imagen         = mysqli_real_escape_string($conexion, $_POST['imagen']); // Se permite modificar imagen también
+    $imagen         = mysqli_real_escape_string($conexion, $_POST['imagen']); 
 
     // Consulta UPDATE
     $sqlUpdate = "UPDATE disfraces
@@ -45,12 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['saludo'] = "Error al modificar el disfraz.";
     }
 
-    // 4. Redireccionar al panel
+    // Redireccionar al panel
     header("Location: admin.php");
     exit();
 }
 
-// 5. Carga de datos del disfraz (GET)
+//  Carga de datos del disfraz 
 $id_disfraces = (isset($_GET['id'])) ? (int) $_GET['id'] : 0;
 
 if ($id_disfraces === 0) {
@@ -71,7 +71,7 @@ if (!$disfraz) {
     exit();
 }
 
-// La conexión se cierra al final del HTML.
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -80,7 +80,7 @@ if (!$disfraz) {
     <title>Editar Disfraz</title>
     
     <style>
-        /* Estilos base (tomados de admin.php) */
+    
         body {
             margin: 0;
             padding: 0;

@@ -5,33 +5,31 @@ session_start();
 // chequeo
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Conexión a la base de datos (Necesaria para sanitizar variables)
+    // conexion base de datos
     $conexion = mysqli_connect("localhost", "root", "", "alquiler_disfraces");
 
     if (!$conexion) {
         die("Error en la conexión a la base de datos.");
     }
     
-    // MEJORA DE SEGURIDAD: Saneamiento de variables antes de usarlas en la consulta
+    //para mejorar la seguridad
     $emailFormSeguro = mysqli_real_escape_string($conexion, $_POST['email']);
     $passwordFormSeguro = mysqli_real_escape_string($conexion, $_POST['password']);
     
-    // LÓGICA DE VALIDACIÓN SIMPLE (Texto Plano):
-    // Buscamos un usuario que coincida con email Y contraseña.
-    // Usamos 'contraseña' para coincidir con el nombre de columna actual en la BD.
-   // Corrección de la consulta para usar el nombre de columna sin 'ñ'
+    // valido:
+    // busco coincidencias entre usuarios y contraseñas  
 $consulta = "SELECT * FROM usuarios 
              WHERE email='$emailFormSeguro' 
              AND `contrasena`='$passwordFormSeguro'";
 
     $resultado = mysqli_query($conexion, $consulta);
     
-    // Validamos: si encuentra exactamente 1 fila, es exitoso.
+    // validacion
     if ($resultado && mysqli_num_rows($resultado) == 1) {
         
         $usuario = mysqli_fetch_assoc($resultado);
 
-        // Guardo datos (Sesión exitosa)
+        // Guardo datos
         $_SESSION['id_usuario'] = $usuario['id_usuario'];
         $_SESSION['nombre']= $usuario['nombre'];
         $_SESSION['email'] = $usuario['email'];
@@ -138,7 +136,7 @@ $consulta = "SELECT * FROM usuarios
             <input type="submit" value="Ingresar">
             
             <?php
-            // Muestra el mensaje de error si existe
+            //error de login 
             if (isset($_SESSION['error_login'])) {
                 echo '<p style="color: #ff5555; margin-top: 15px;">' . $_SESSION['error_login'] . '</p>';
                 unset($_SESSION['error_login']); 
