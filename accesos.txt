@@ -1,0 +1,12 @@
+2025-11-19 22:52:33 - Usuario Selena (ID 1) - 1 minutos
+2025-11-19 22:54:07 - Usuario Paula (ID 2) - 1 minutos
+2025-11-20 14:54:04 - Usuario Selena (ID 1) - 1 minutos
+2025-11-20 14:55:03 - Usuario Juan (ID 3) - 1 minutos
+2025-11-21 01:52:38 - Usuario Selena (ID 1) - 5 minutos
+2025-11-21 01:59:49 - Usuario Selena (ID 1) - 1 minutos
+2025-11-21 02:05:14 - Usuario Paula (ID 2) - 1 minutos
+2025-12-03 01:51:30 - Usuario Selena (ID 1) - 1 minutos
+2025-12-03 01:57:02 - Usuario Selena (ID 1) - 1 minutos
+2025-12-03 01:57:29 - Usuario Juan (ID 3) - 1 minutos
+2025-12-03 01:58:34 - Usuario Paula (ID 2) - 1 minutos
+2025-12-03 01:59:58 - Usuario Paula (ID 2) - 1 minutos

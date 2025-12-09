@@ -1,0 +1,28 @@
+siempre, inicio session, compruebo el usuario y el tipo y sino que vuelva al principal y conecto base de datos
+
+Usuarios:
+
+tipo -> cliente
+Selena
+selena.cuadra@davinci.edu.ar
+123456789
+
+tipo-> empleado
+Juan
+Juan.perez@davinci.edu.ar
+111111111 (9 unos)
+
+tipo -> admin
+Paula
+Paula.giaimo@davinci.edu.ar
+123123123 
+
+Disfraces ->
+disfraz bowling
+disfraz conos
+disfraz calendario jesus
+disfraz patty y selma
+disfraz de terror
+disfraz trapos de piso
+disfraz ovejas
+disfraz teletubies
