@@ -10,3 +10,7 @@
 2025-12-03 01:57:29 - Usuario Juan (ID 3) - 1 minutos
 2025-12-03 01:58:34 - Usuario Paula (ID 2) - 1 minutos
 2025-12-03 01:59:58 - Usuario Paula (ID 2) - 1 minutos
+2025-12-09 15:07:01 - Usuario Paula (ID 2) - 1 minutos
+2025-12-09 15:07:15 - Usuario Paula (ID 2) - 1 minutos
+2025-12-09 15:08:37 - Usuario Selena (ID 1) - 1 minutos
+2025-12-09 15:09:16 - Usuario Juan (ID 3) - 1 minutos

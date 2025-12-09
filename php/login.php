@@ -2,29 +2,36 @@
 // inicio sesión
 session_start();
 
-// chequeo l
+// chequeo
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // datos del formulario
-    $emailForm = $_POST['email'];
-    $passwordForm = $_POST['password'];
-
-    // Conexion a la base de datos
+    // Conexión a la base de datos (Necesaria para sanitizar variables)
     $conexion = mysqli_connect("localhost", "root", "", "alquiler_disfraces");
 
     if (!$conexion) {
         die("Error en la conexión a la base de datos.");
     }
+    
+    // MEJORA DE SEGURIDAD: Saneamiento de variables antes de usarlas en la consulta
+    $emailFormSeguro = mysqli_real_escape_string($conexion, $_POST['email']);
+    $passwordFormSeguro = mysqli_real_escape_string($conexion, $_POST['password']);
+    
+    // LÓGICA DE VALIDACIÓN SIMPLE (Texto Plano):
+    // Buscamos un usuario que coincida con email Y contraseña.
+    // Usamos 'contraseña' para coincidir con el nombre de columna actual en la BD.
+   // Corrección de la consulta para usar el nombre de columna sin 'ñ'
+$consulta = "SELECT * FROM usuarios 
+             WHERE email='$emailFormSeguro' 
+             AND `contrasena`='$passwordFormSeguro'";
 
-    //consulta SOLO por email.
-    $consulta = "SELECT * FROM usuarios WHERE email='$emailForm'";
     $resultado = mysqli_query($conexion, $consulta);
-    $usuario = mysqli_fetch_assoc($resultado); 
     
-    // Se valida usando password_verify()
-    if ($usuario && password_verify($passwordForm, $usuario['contrasena'])) {
-    
-        // Guardo datossolo se ejecuta si la contraseña hasheada es válida
+    // Validamos: si encuentra exactamente 1 fila, es exitoso.
+    if ($resultado && mysqli_num_rows($resultado) == 1) {
+        
+        $usuario = mysqli_fetch_assoc($resultado);
+
+        // Guardo datos (Sesión exitosa)
         $_SESSION['id_usuario'] = $usuario['id_usuario'];
         $_SESSION['nombre']= $usuario['nombre'];
         $_SESSION['email'] = $usuario['email'];
@@ -44,14 +51,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     } else {
         
+        // Login fallido
         $_SESSION['error_login'] = "Email o contraseña incorrectos.";
         
-     
+        // Redirigimos de vuelta para que se muestre el error
+        header("Location: " . htmlspecialchars($_SERVER["PHP_SELF"]));
         exit();
     }
 }
-
-       
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -59,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* ... Estilos CSS ... */
         body {
             margin: 0;
             padding: 0;
@@ -125,7 +133,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
             <h1>Bienvenido al alquiler de disfraces</h1>
             <h3>Inicie sesión para continuar con el proceso</h3>
-            <input type="text" name="nombre" placeholder="Nombre" required> 
             <input type="text" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Contraseña" required>
             <input type="submit" value="Ingresar">
